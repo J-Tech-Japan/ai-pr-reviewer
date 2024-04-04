@@ -1,50 +1,25 @@
 # AI-based PR reviewer and summarizer
 
-[![Discord](https://img.shields.io/badge/Join%20us%20on-Discord-blue?logo=discord&style=flat-square)](https://discord.gg/GsXnASn26c)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![GitHub](https://img.shields.io/github/last-commit/coderabbitai/ai-pr-reviewer/main?style=flat-square)](https://github.com/coderabbitai/ai-pr-reviewer/commits/main)
 
 ## Overview
 
-wisteria30/ai-pr-reviewer modifies CodeRabbit `ai-pr-reviewer` for
-use with Azure OpenAI and is more secure since it accesses models you deploy yourself.
+J-Tech-Japan/ai-pr-reviewerは、Azure OpenAIを使用するように修正されたCodeRabbit `ai-pr-reviewer`です。自分で展開したモデルを利用するため、より安全です。
 
-CodeRabbit `ai-pr-reviewer` is an AI-based code reviewer and summarizer for
-GitHub pull requests using OpenAI's `gpt-3.5-turbo` and `gpt-4` models. It is
-designed to be used as a GitHub Action and can be configured to run on every
-pull request and review comments
+CodeRabbit ai-pr-reviewerは、OpenAIの`gpt-3.5-turbo`および`gpt-4`モデルを使用したGitHubプルリクエストのためのAIベースのコードレビューアおよび要約ツールです。GitHubアクションとして使用するように設計されており、すべてのプルリクエストで実行およびコメントをレビューするように構成できます。
 
 ## Reviewer Features:
 
-- **PR Summarization**: It generates a summary and release notes of the changes
-  in the pull request.
-- **Line-by-line code change suggestions**: Reviews the changes line by line and
-  provides code change suggestions.
-- **Continuous, incremental reviews**: Reviews are performed on each commit
-  within a pull request, rather than a one-time review on the entire pull
-  request.
-- **Cost-effective and reduced noise**: Incremental reviews save on OpenAI costs
-  and reduce noise by tracking changed files between commits and the base of the
-  pull request.
-- **"Light" model for summary**: Designed to be used with a "light"
-  summarization model (e.g. `gpt-3.5-turbo`) and a "heavy" review model (e.g.
-  `gpt-4`). _For best results, use `gpt-4` as the "heavy" model, as thorough
-  code review needs strong reasoning abilities._
-- **Chat with bot**: Supports conversation with the bot in the context of lines
-  of code or entire files, useful for providing context, generating test cases,
-  and reducing code complexity.
-- **Smart review skipping**: By default, skips in-depth review for simple
-  changes (e.g. typo fixes) and when changes look good for the most part. It can
-  be disabled by setting `review_simple_changes` and `review_comment_lgtm` to
-  `true`.
-- **Customizable prompts**: Tailor the `system_message`, `summarize`, and
-  `summarize_release_notes` prompts to focus on specific aspects of the review
-  process or even change the review objective.
+- **プルリクエストの要約**: プルリクエストの変更の要約とリリースノートを生成します。
+- **行ごとのコード変更の提案**: 変更を行ごとにレビューし、コード変更の提案を提供します。
+- **継続的でインクリメンタルなレビュー**: プルリクエスト内の各コミットでレビューを実行します。プルリクエスト全体の一度限りのレビューではありません。
+- **高い費用効率とノイズの低減**: インクリメンタルレビューはOpenAIのコストを節約し、コミット間の変更されたファイルとプルリクエストのベースを追跡することでノイズを低減します。
+- **サマリーには「軽量」モデルを使用**: 「軽量」の要約モデル（例：`gpt-3.5-turbo`）と「重量」のレビューモデル（例：`gpt-4`）と一緒に使用するように設計されています。_徹底的なコードレビューには強力な推論能力が必要なため、最適な結果を得るためには、「重量」モデルとして`gpt-4`を使用してください。_
+- **チャットボット**: コードの行やファイル全体のコンテキストでボットとの会話をサポートし、コンテキストの提供、テストケースの生成、コードの複雑さの低減に役立ちます。
+- **レビューのスキップ**: 初期設定では、単純な変更（例：誤字修正）や変更の大部分が良好に見える場合に、詳細なレビューをスキップします。`review_simple_changes`と`review_comment_lgtm`を`true`に設定することで無効にできます。
+- **カスタマイズ可能なプロンプト**: `system_message`、`summarize`、`summarize_release_notes`プロンプトを調整して、レビュープロセスの特定の側面に焦点を当てたり、レビュー目標を変更したりできます。
 
-To use this tool, you need to add the provided YAML file to your repository and
-configure the required environment variables, such as `GITHUB_TOKEN` and
-`OPENAI_API_KEY`. For more information on usage, examples, contributing, and
-FAQs, you can refer to the sections below.
+このツールを使用するには、提供されたYAMLファイルをリポジトリに追加し、`GITHUB_TOKEN`や`OPENAI_API_KEY`などの必要な環境変数を設定する必要があります。使用方法、例、貢献、FAQについての詳細については、以下を参照してください。
 
 - [Overview](#overview)
 - [Professional Version of CodeRabbit](#professional-version-of-coderabbit)
@@ -57,8 +32,7 @@ FAQs, you can refer to the sections below.
 
 ## Install instructions
 
-`ai-pr-reviewer` runs as a GitHub Action. Add the below file to your repository
-at `.github/workflows/ai-pr-reviewer.yml`
+`ai-pr-review` はGitHub Actionで動作します。以下のファイルをリポジトリに追加してください。`.github/workflows/ai-pr-reviewer.yml`
 
 ```yaml
 name: Code Review
@@ -101,35 +75,27 @@ jobs:
 
 #### Environment variables
 
-- `GITHUB_TOKEN`: This should already be available to the GitHub Action
-  environment. This is used to add comments to the pull request.
-- `AZURE_OPENAI_API_KEY`: use this to authenticate with Azure OpenAI API.
-  Please add key to your GitHub Action secrets.
-- `AZURE_OPENAI_API_INSTANCE_NAME`: use this to access your Azure OpenAI API
-  instance. Please add instance name to your GitHub Action secrets.
-- `AZURE_OPENAI_API_DEPLOYMENT_NAME`: use this to inferencing your Azure OpenAI
-  API model. Please add deployment name to your GitHub Action secrets.
-- `AZURE_OPENAI_API_VERSION`: use this to access your Azure OpenAI API version.
+- `GITHUB_TOKEN`: これはすでにGitHubアクション環境で利用可能です。これはプルリクエストにコメントを追加するために使用されます。
+- `AZURE_OPENAI_API_KEY`: Azure OpenAI APIと認証するために使用します。GitHub Actionのシークレットにキーを追加してください。
+- `AZURE_OPENAI_API_INSTANCE_NAME`: Azure OpenAI APIインスタンスにアクセスするために使用します。GitHub Actionのシークレットにインスタンス名を追加してください。
+- `AZURE_OPENAI_API_DEPLOYMENT_NAME`: Azure OpenAI APIモデルを推論するために使用します。GitHub Actionのシークレットにデプロイメント名を追加してください。
+- `AZURE_OPENAI_API_VERSION`: Azure OpenAI APIバージョンにアクセスするために使用します。
 
-See Langchain settings for specific values.
+具体的な値については、Langchainの設定を参照してください。
 https://js.langchain.com/docs/integrations/text_embedding/azure_openai
 
 ### Models: `gpt-4` and `gpt-3.5-turbo`
 
-Recommend using `gpt-3.5-turbo` for lighter tasks such as summarizing the
-changes (`openai_light_model` in configuration) and `gpt-4` for more complex
-review and commenting tasks (`openai_heavy_model` in configuration).
+サマリーのような軽いタスクには`gpt-3.5-turbo`を使用し(`openai_light_model` in configuration)、より複雑なレビューやコメントタスクには`gpt-4`を使用することをお勧めします (`openai_heavy_model` in configuration)。
 
-Costs: `gpt-3.5-turbo` is dirt cheap. `gpt-4` is orders of magnitude more
-expensive, but the results are vastly superior. We are typically spending $20 a
-day for a 20 developer team with `gpt-4` based review and commenting.
+費用: `gpt-3.5-turbo`は非常に安価です。`gpt-4`は桁違いに高価ですが、優れた結果が得られます。通常、`gpt-4`ベースのレビューとコメントでは、1日あたり20ドルを20人の開発者チームに費やしています。
 
 ### Prompts & Configuration
 
 See: [action.yml](./action.yml)
 
-Tip: You can change the bot personality by configuring the `system_message`
-value. For example, to review docs/blog posts, you can use the following prompt:
+Tip: `system_message`の値を設定することで、ボットのパーソナリティを変更できます。たとえば、ドキュメントやブログ記事をレビューする場合は、次のプロンプトを使用できます。
+
 
 <details>
 <summary>Blog Reviewer Prompt</summary>
@@ -165,9 +131,8 @@ system_message: |
 
 ## Conversation with CodeRabbit
 
-You can reply to a review comment made by this action and get a response based
-on the diff context. Additionally, you can invite the bot to a conversation by
-tagging it in the comment (`@coderabbitai`).
+このアクションによって作成されたレビューコメントにリプライすることで、diffコンテキストに基づいた応答を取得できます。さらに、コメントでボットをタグ付けして会話に招待することができます（`@coderabbitai`）。
+
 
 Example:
 
@@ -178,9 +143,7 @@ request.
 
 ### Ignoring PRs
 
-Sometimes it is useful to ignore a PR. For example, if you are using this action
-to review documentation, you can ignore PRs that only change the documentation.
-To ignore a PR, add the following keyword in the PR description:
+PRを無視して欲しいときもあるはずです。例えば、このアクションを使用してドキュメントをレビューしている場合、ドキュメントのみを変更するPRを無視することができます。PRを無視するには、PRの説明に次のキーワードを追加します。
 
 ```text
 @coderabbitai: ignore
@@ -197,9 +160,6 @@ Some of the reviews done by ai-pr-reviewer
 ![PR Review](./docs/images/section-1.png)
 
 ![PR Conversation](./docs/images/section-3.png)
-
-Any suggestions or pull requests for improving the prompts are highly
-appreciated.
 
 ## Contribute
 
